@@ -12,6 +12,18 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 
+# Code for Importing Key Vault Secrets
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
+
+credential = DefaultAzureCredential()
+
+secret_client = SecretClient(vault_url="https://stratacent-kv.vault.azure.net/", credential=credential)
+DB_Host = secret_client.get_secret("DBHost")
+DB_User = secret_client.get_secret("DBUser")
+DB_Password = secret_client.get_secret("DBPassword")
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -82,10 +94,10 @@ WSGI_APPLICATION = 'DjangoAPI.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
-        'NAME': 'stratacenttestdb2',
-        'USER':'superuserris',
-        'PASSWORD':'P@$$w0rd1234',
-        'HOST':'stratacentserver.database.windows.net',
+        'NAME': 'stratacentdb2',
+        'USER': DB_User.value,
+        'PASSWORD': DB_Password.value,
+        'HOST': DB_Host.value,
         'OPTIONS':{
             'driver':'ODBC Driver 17 for SQL Server',
             'isolation_level':'READ UNCOMMITTED' #to prevent deadlocks
