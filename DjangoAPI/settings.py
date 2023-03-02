@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+
+BASE_DIR=Path(__file__).resolve(strict=True).parent.parent
+MEDIA_URL='/Photos/'
+MEDIA_ROOT=os.path.join(BASE_DIR,"Photos")
 
 # Code for Importing Key Vault Secrets
 from azure.identity import DefaultAzureCredential
